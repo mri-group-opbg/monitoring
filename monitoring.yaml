@@ -1,0 +1,30 @@
+version: '3.1'
+
+services:
+
+  prometheus:
+    image: prom/prometheus
+    restart: always
+    volumes:
+    - ./prometheus/prometheus.yaml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+
+  grafana:
+    image: grafana/grafana
+    restart: always
+    volumes:
+    - ./grafana/config.ini:/etc/grafana/config.ini
+    - ./grafana/dashboards:/var/lib/grafana/dashboards
+    - ./grafana/provisioning:/etc/grafana/provisioning
+    ports:
+      - 3000:3000
+    depends_on:
+      - "prometheus"
+
+  open-tsdb:
+    image: petergrace/opentsdb-docker 
+    restart: always
+    ports:
+      - 4242:4242
+
